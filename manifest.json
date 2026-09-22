@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.wouldja.fans",
+  "name": "Fans",
+  "version": "1.0.0",
+  "author": "Brian Ehlers",
+  "description": "Fan curve, cool and quiet, and performance mode for the Sager P870DM-G",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "Fans",
+    "description": "Fan curve, cool and quiet, and performance mode",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
