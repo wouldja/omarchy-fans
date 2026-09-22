@@ -241,79 +241,56 @@ Panel {
         Column {
           id: panelColumn
           width: scrollArea.availableWidth
-          spacing: Style.space(14)
+          spacing: Style.space(6)
 
           PanelHero {
             width: parent.width
             title: "Fans"
+            iconSize: Style.font.title
             meta: Model.heroMeta({
               available: root.available,
               mode: root.mode,
               cpuTemp: root.cpuTemp,
               cpuRpm: root.cpuRpm
             })
-            detail: root.loaded && !root.available ? "No driver" : ""
+            detail: "1.1.0"
             foreground: root.bar.foreground
             fontFamily: root.bar.fontFamily
             iconComponent: heroIcon
           }
 
-          Row {
+          Text {
             width: parent.width
-            spacing: Style.space(16)
-
-            Column {
-              spacing: Style.space(2)
-              Text {
-                text: "CPU"
-                color: Qt.darker(root.bar.foreground, 1.4)
-                font.family: root.bar.fontFamily
-                font.pixelSize: Style.font.caption
-                font.bold: true
-              }
-              Text {
-                text: (root.cpuTemp > 0 ? root.cpuTemp + "°C" : "—") + (root.cpuRpm > 0 ? "   " + root.cpuRpm + " rpm" : "")
-                color: root.bar.foreground
-                font.family: root.bar.fontFamily
-                font.pixelSize: Style.font.subtitle
-              }
-            }
-
-            Column {
-              spacing: Style.space(2)
-              visible: root.gpuTemp > 0 || root.gpuRpm > 0
-              Text {
-                text: "GPU"
-                color: Qt.darker(root.bar.foreground, 1.4)
-                font.family: root.bar.fontFamily
-                font.pixelSize: Style.font.caption
-                font.bold: true
-              }
-              Text {
-                text: (root.gpuTemp > 0 ? root.gpuTemp + "°C" : "—") + (root.gpuRpm > 0 ? "   " + root.gpuRpm + " rpm" : "")
-                color: root.bar.foreground
-                font.family: root.bar.fontFamily
-                font.pixelSize: Style.font.subtitle
-              }
-            }
+            text: "CPU " + (root.cpuTemp > 0 ? root.cpuTemp + "°C" : "—")
+              + (root.cpuRpm > 0 ? "  " + root.cpuRpm + " rpm" : "")
+              + ((root.gpuTemp > 0 || root.gpuRpm > 0)
+                ? "    GPU " + (root.gpuTemp > 0 ? root.gpuTemp + "°C" : "—")
+                  + (root.gpuRpm > 0 ? "  " + root.gpuRpm + " rpm" : "")
+                : "")
+            color: root.bar.foreground
+            font.family: root.bar.fontFamily
+            font.pixelSize: Style.font.caption
+            font.bold: true
+            elide: Text.ElideRight
           }
 
           Text {
+            visible: root.loaded && !root.available
             width: parent.width
             wrapMode: Text.Wrap
-            text: root.loaded && !root.available
-              ? "The fan controller is not loaded, so these controls cannot reach the fans yet."
-              : Model.blurb(root.mode)
+            text: "The fan controller is not loaded, so these controls cannot reach the fans yet."
             color: Qt.darker(root.bar.foreground, 1.4)
             font.family: root.bar.fontFamily
             font.pixelSize: Style.font.caption
           }
 
-          PanelSeparator { foreground: root.bar.foreground }
-
-          Column {
+          Grid {
+            id: modeGrid
             width: parent.width
-            spacing: Style.spacing.xs
+            columns: 2
+            columnSpacing: Style.space(6)
+            rowSpacing: Style.space(4)
+            readonly property real cellWidth: (width - columnSpacing) / 2
 
             Repeater {
               model: Model.modes
@@ -321,11 +298,13 @@ Panel {
               Button {
                 required property var modelData
                 required property int index
-                width: parent.width
+                width: modeGrid.cellWidth
                 text: modelData.label
-                fontSize: Style.font.body
+                fontSize: Style.font.caption
                 foreground: root.bar.foreground
                 fontFamily: root.bar.fontFamily
+                horizontalPadding: Style.spacing.sm
+                verticalPadding: Style.space(3)
                 bordered: true
                 selected: root.mode === modelData.value
                 hasCursor: root.cursorActive && root.focusSection === "mode" && root.selectedIndex === index
@@ -339,8 +318,6 @@ Panel {
               }
             }
           }
-
-          PanelSeparator { foreground: root.bar.foreground; visible: root.mode === "manual" || root.mode === "curve" }
 
           SliderSection {
             visible: root.mode === "manual"
@@ -359,7 +336,7 @@ Panel {
           Column {
             visible: root.mode === "curve"
             width: parent.width
-            spacing: Style.space(12)
+            spacing: Style.space(4)
 
             Repeater {
               model: Model.points
@@ -381,7 +358,6 @@ Panel {
             }
           }
 
-          Item { width: parent.width; height: Style.space(4) }
         }
       }
     }
@@ -394,7 +370,7 @@ Panel {
       text: root.iconGlyph
       color: root.bar.foreground
       font.family: root.bar.fontFamily
-      font.pixelSize: Style.font.display
+      font.pixelSize: Style.font.title
     }
   }
 
@@ -412,7 +388,7 @@ Panel {
     signal moved(real value)
     signal released(real value)
 
-    spacing: Style.space(6)
+    spacing: Style.space(2)
 
     Item {
       width: parent.width
@@ -443,7 +419,7 @@ Panel {
 
     CursorSurface {
       width: parent.width
-      height: slider.implicitHeight + Style.spacing.controlGap
+      height: slider.implicitHeight
       hasCursor: root.cursorActive && root.focusSection === sliderSection.sectionId
       foreground: root.bar.foreground
       outline: true
