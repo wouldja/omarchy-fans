@@ -6,6 +6,8 @@ Click the fan icon. Auto leaves the laptop in charge. Cool & quiet and Performan
 
 Right-click the icon to return to Auto. Scroll it, while Manual is selected, to nudge the speed. At 95°C the fans go to full speed no matter what the curve says.
 
+![Fans panel](preview.png)
+
 ## Install
 
 ```sh
