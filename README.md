@@ -14,10 +14,12 @@ Right-click the icon to return to Auto. Scroll it, while Manual is selected, to 
 omarchy plugin add https://github.com/wouldja/omarchy-fans.git --enable
 ```
 
-This panel uses the `sager_kbd` kernel module shipped with the Keyboard plugin. Install that plugin and its driver first:
+This panel uses the `sager_kbd` kernel module shipped with the Keyboard plugin. Install the reviewed driver revision below first; it grants sysfs write access only to the desktop user who runs the privileged installer.
 
 ```sh
-omarchy plugin add https://github.com/wouldja/omarchy-keyboard.git --enable
+git clone https://github.com/wouldja/omarchy-keyboard.git ~/.config/omarchy/plugins/io.github.wouldja.keyboard
+git -C ~/.config/omarchy/plugins/io.github.wouldja.keyboard checkout edad56b5b41a1e940af3d6f5803a2fd70367fc0d
+omarchy plugin enable io.github.wouldja.keyboard
 pkexec ~/.config/omarchy/plugins/io.github.wouldja.keyboard/driver/install.sh
 ```
 
